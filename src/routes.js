@@ -20,6 +20,11 @@ import NotificationsPage from "views/Notifications/Notifications.jsx";
 
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.jsx";
 
+import DTable from "views/DT/DTExp.jsx";
+
+import AsyncFetch from "views/DT/AsyncFetch.jsx";
+import Owner from "views/DT/FetchOwner.jsx";
+
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -43,6 +48,30 @@ const dashboardRoutes = [
     rtlName: "قائمة الجدول",
     icon: "content_paste",
     component: TableList,
+    layout: "/admin"
+  },
+  {
+    path: "/dtable",
+    name: "Data Table",
+    rtlName: "قائمة الجدول",
+    icon: "content_paste",
+    component: DTable,
+    layout: "/admin"
+  },
+  {
+    path: "/owner",
+    name: "Owner",
+    rtlName: "قائمة الجدول",
+    icon: "content_paste",
+    component: Owner,
+    layout: "/admin"
+  },
+  {
+    path: "/asyncfetch",
+    name: "Async Fetch",
+    rtlName: "قائمة الجدول",
+    icon: "content_paste",
+    component: AsyncFetch,
     layout: "/admin"
   },
   {

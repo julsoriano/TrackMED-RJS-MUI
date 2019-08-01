@@ -43,6 +43,10 @@ const styles = {
 
 function TableList(props) {
   const { classes } = props;
+  var cls = props.classes;
+  for (var x in cls) {
+    console.log("Class Name: " + cls[x]);
+  }
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
