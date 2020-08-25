@@ -24,16 +24,17 @@ const Sidebar = ({ ...props }) => {
   }
   const { classes, color, logo, image, logoText, routes } = props;
   console.log(classes.img);
-  /*
+  
   var cls = props.classes;
   for (var x in cls) {
     console.log("Class Name: " + cls[x]);
   }
-  */
+  
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
         var activePro = " ";
+        console.log("Classes: " + classes.list);
         var listItemClasses;
         if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
