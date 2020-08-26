@@ -23,18 +23,18 @@ const Sidebar = ({ ...props }) => {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   }
   const { classes, color, logo, image, logoText, routes } = props;
-  console.log(classes.img);
+  // console.log(classes.img);
   
   var cls = props.classes;
   for (var x in cls) {
-    console.log("Class Name: " + cls[x]);
+    // console.log("Class Name: " + cls[x]);
   }
   
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
         var activePro = " ";
-        console.log("Classes: " + classes.list);
+        // console.log("Classes: " + classes.list);
         var listItemClasses;
         if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
@@ -45,7 +45,7 @@ const Sidebar = ({ ...props }) => {
           listItemClasses = classNames({
             [" " + classes[color]]: activeRoute(prop.layout + prop.path)
           });
-          console.log("listItemClasses: " + listItemClasses);
+          // console.log("listItemClasses: " + listItemClasses);
         }
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)

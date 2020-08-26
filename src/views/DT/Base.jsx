@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
+
+// import MUIDataTable from "mui-datatables";
 import './Base.css';
 import { isNullOrUndefined } from 'util';
 
 import MedComp from './popup/MedComp.popup';
 import MedSystem from './popup/MedSystem.popup';
+import AsyncFetchPop from './popup/AsyncFetch.popup';
 
 // import '../../../node_modules/bootstrap/dist/css/bootstrap.css';
 
@@ -58,7 +61,9 @@ export class Base extends Component {
         this.state = { 
             descriptions: [], 
             medComponents: [],
-            medSystems: [],            
+            medSystems: [], 
+            dtComponents: [],    
+            dtSystems: [],         
             loading: true };
     }
   
@@ -106,6 +111,14 @@ export class Base extends Component {
             </table>
         </td>, root);
     }
+
+    popupComponentDT(root) {
+        // alert(Array.isArray(this.state.medComponents) ? "medComponents is an Array" : "medComponents is not an Array");
+        ReactDOM.render( 
+        <td colSpan = '4'> 
+            <AsyncFetchPop data = { this.state.dtComponents } />
+        </td>, root);
+    }
     
     // Function to compare two objects by comparing their `desc` property.const
     // From: https://stackoverflow.com/questions/42203953/angular2-rxjs-order-observable-list-of-objects-by-an-observable-field 
@@ -150,17 +163,82 @@ export class Base extends Component {
         'calibrationDate' : 'Calibration Due Date',
         'maintenanceDate' : 'Maintenance Due Date'
     }    
-     
+ 
+    createDataTable(id, elGP, elP){
+        // create a <table> row element
+        this.tr = document.createElement("tr");
+        this.tr.setAttribute("id", "NestedTR");
+        
+        let apiTbl = 'api/Component';    
+        this.title === 'Location' ? apiTbl = 'api/SystemTab/' : apiTbl = 'api/Component/';
+        let urlComplete = this.itemUrl + apiTbl + this.title + '/' + id;
+        
+        fetch(urlComplete)
+        .then(response => response.json()) 
+        .then(data => {
+            console.log(urlComplete);
+            // console.log(data);
+            // this.setState({ title: this.title, id: this.id });
+ 
+            if( this.title === 'Description' || 
+                this.title === 'Owner' ||
+                this.title === 'Status' ||
+                this.title === 'Model/Manufacturer' ||
+                this.title === 'Service Provider' ) {             
+
+                this.setState({ dtComponents: data, loading: false });
+                this.popupComponentDT(this.tr); 
+        
+            } else if( this.title === 'Location') {
+
+                this.setState({ dtSystems: data, loading: false });
+                this.popupSystemTable(this.tr); 
+            }  
+            
+            elGP.insertBefore(this.tr, elP.nextSibling);  
+        });         
+         
+        
+        /*
+        const loadJson = () =>
+            // fetch("http://localhost:5000/api/Component/?limit=10")
+            // fetch("http://localhost:5000/api/Component/Owner/59bdbe5d1bd00316e834ae33")
+            // fetch("https://api.coinmarketcap.com/v1/ticker/?limit=10")
+            fetch(urlComplete)
+                .then(res => (res.ok ? res : Promise.reject(res)))
+                .then(res => res.json())
+
+        //const App = () => (
+        // ReactDOM.render(
+        return (
+            <Async promiseFn={loadJson}>
+            {({ data, error, isLoading }) => {
+              if (isLoading) return "Loading..."
+              if (error) return `Something went wrong: ${error.message}`
+              
+              console.log("In AsyncFetch")
+              
+              if (data) {
+                console.log(data)
+                this.setState({ dtComponents: data, loading: false });
+                this.popupComponentDT(this.tr);
+              } 
+            }}
+          </Async>
+        )
+        */
+    }
+
     // Dynamically compose nested table: Using Plain HTML Elements
     createNTableHTML(id, elGP, elP, headings) {
-
+        
         let urlComplete = this.itemUrl + 'api/Component/' + this.tableName[1] + '/' + id;
 
         fetch(urlComplete)
         .then(response => response.json()) 
         .then(data => {
-            // console.log("Number of Components = " + Object.keys(data).length);
-            // console.log(data);
+            console.log("Number of Components = " + Object.keys(data).length);
+            console.log(data);
 
             // create a <table> element
             this.tr = document.createElement("tr");
@@ -277,11 +355,12 @@ export class Base extends Component {
         let apiTbl = 'api/Component';    
         this.title === 'Location' ? apiTbl = 'api/SystemTab/' : apiTbl = 'api/Component/';
         let urlComplete = this.itemUrl + apiTbl + this.title + '/' + id;
-        // alert(urlComplete);
+        
         fetch(urlComplete)
         .then(response => response.json()) 
         .then(data => {
-            
+            console.log(urlComplete);
+            console.log(data);
             // this.setState({ title: this.title, id: this.id });
  
             if( this.title === 'Description' || 
@@ -310,6 +389,7 @@ export class Base extends Component {
         let elP = event.target.parentNode; // Parent Node: tr
         let elGP = elP.parentNode;         // Parent Node: tbody
         let elList = event.target.classList;
+        console.log(id);
 
         /* Uncomment for testing only
         let div = document.createElement('div');
@@ -329,7 +409,9 @@ export class Base extends Component {
             // this.createNTableHTML(id, elGP, elP, this.headings);     
             
             // create nested table using custom HTML elements
-            this.createNTableComponent(id, elGP, elP);
+            // this.createNTableComponent(id, elGP, elP);
+
+            this.createDataTable(id, elGP, elP);
 
             this.elListSave = elList;
 
