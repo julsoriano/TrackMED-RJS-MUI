@@ -1,29 +1,12 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-// import './popup/Bats';
 
 export class MedComp extends Component {
 	/*
-	constructor(props) {
-		super(props);
-
-		// uncomment for testing
-		// this.state = { data: [] };
-	}
-	
 	static propTypes = {
 		onTabClosed: PropTypes.func
 	};
 	*/
-	componentDidMount() {
-
-		/* uncomment for testing
-		fetch(`https://api.coinmarketcap.com/v1/ticker/?limit=10`)
-		.then(res => res.json())
-		.then(json => this.setState({ data: json }));
-		*/
-	}
-
 	componentWillUnmount() {
 		alert('componentWillUnmount');
 	}
@@ -31,23 +14,6 @@ export class MedComp extends Component {
 	_handleRef = (component) => {
 		this.component = component;
 	};
-
-	/* uncomment for testing
-	render() {
-		alert('render in /src/Batas.js');
-		return (
-			<x-bats ref={this._handleRef}>
-				<ul>
-					{this.state.data.map(el => (
-						<li>
-						{el.name}: {el.price_usd}
-						</li>
-					))}
-				</ul>
-			</x-bats>
-		);
-	}	
-	*/
 
 	render() {
 		const {data} = this.props;

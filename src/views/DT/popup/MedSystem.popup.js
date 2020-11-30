@@ -1,20 +1,6 @@
 import React, { Component } from 'react';
 
 export class MedSystem extends Component {
-	/*
-	constructor(props) {
-		super(props);
-	}
-	
-	*/
-	componentDidMount() {
-
-		/* uncomment for testing
-		fetch(`https://api.coinmarketcap.com/v1/ticker/?limit=10`)
-		.then(res => res.json())
-		.then(json => this.setState({ data: json }));
-		*/
-	}
 
 	componentWillUnmount() {
 		alert('componentWillUnmount');

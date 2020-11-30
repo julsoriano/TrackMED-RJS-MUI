@@ -107,7 +107,7 @@ class Dashboard extends React.Component {
   render() {
     // where did the props come from
     const { classes, ...rest } = this.props;
-    /*
+    
     console.log("Props: " + Object.keys(this.props));
     // Props: classes,history,location,match,staticContext
 
@@ -115,6 +115,7 @@ class Dashboard extends React.Component {
     for (var x in cls) {
       console.log("Class Name: " + cls[x]);
     }
+    /*
     // Console Log
     Props: classes,history,location,match,staticContext
     Class Name: Dashboard-wrapper-1

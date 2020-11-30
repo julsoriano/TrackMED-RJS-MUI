@@ -1,18 +1,26 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
 
-// import MUIDataTable from "mui-datatables";
 import './Base.css';
-import { isNullOrUndefined } from 'util';
 
 import MedComp from './popup/MedComp.popup';
 import MedSystem from './popup/MedSystem.popup';
 import AsyncFetchPop from './popup/AsyncFetch.popup';
+import ConfirmDialog from './popup/ConfirmDialog.jsx';
+
+import Icon from "@material-ui/core/Icon";
+
+import SimpleDialog from '../../components/Dialog/SimpleDialog';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
+// import SvgIcon from '@material-ui/core/SvgIcon';
+// import { SvgIcon } from '@material-ui/core';
 
 // import '../../../node_modules/bootstrap/dist/css/bootstrap.css';
 
 export class Base extends Component {
-    // Table cloned from TrackMED-RJS-VS
+     
     renderCommonTable(descriptions) { 
         return <table className='table-striped table-condensed table-hover' cellSpacing='0' width='100%'>
             <thead>
@@ -31,11 +39,39 @@ export class Base extends Component {
                     <td>{ index + 1 }</td>
                     <td>{ description.desc }</td>
                     <td>{ new Date(description.createdAtUtc).toLocaleDateString('en-GB', this.options) }</td>
+                    <td><Icon onClick={this.onSelect}>update</Icon></td>
+                    <td><Icon onClick={this.setConfirmOpen}>deleteforever</Icon>
+                    </td>
                 </tr>
             )}
             </tbody>
         </table>;
     }
+    /**
+     *                     
+                    
+                        <ConfirmDialog
+                            title="Delete Record?"
+                            open={this.confirmOpen}
+                            setOpen = {this.confirmOpen}
+                            onConfirm={this.deletePost}
+                        >
+                            Are you sure you want to delete this record?
+                        </ConfirmDialog>                
+     */
+    /*
+    const [open, setOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = (value) => {
+      setOpen(false);
+      setSelectedValue(value);
+    };
+    */
 
     itemUrl = 'http://localhost:5000/';
     title;
@@ -43,20 +79,21 @@ export class Base extends Component {
     options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     tr;
     elListSave;
-    /*
-      React components can have state by setting this.state in the constructor, which should be considered private to the component.
-      Let's store the current value of the descriptions table in state, and change it when another table is clicked.
-  
-      First, add a constructor to the class to initialize the state:
-    */   
-    constructor(props) {
+
+    confirmOpen = false;
+    deletePost = false;
+
+    constructor() {
   
         // In JavaScript classes, you need to explicitly call super(); when defining the constructor of a subclass. 
         // See https://reactjs.org/tutorial/tutorial.html
-        super(props);  
+        super();  
       
         // This binding is necessary to make `this` work in the callback
         this.showRelatedTable = this.showRelatedTable.bind(this);
+        this.onSelect = this.onSelect.bind(this);
+        //this.onDelete = this.onDelete.bind(this);
+        this.setConfirmOpen = this.setConfirmOpen.bind(this);
 
         this.state = { 
             descriptions: [], 
@@ -68,9 +105,8 @@ export class Base extends Component {
     }
   
     popupComponentTable(root) {
-        // alert(Array.isArray(this.state.medComponents) ? "medComponents is an Array" : "medComponents is not an Array");
         ReactDOM.render(  
-        <td colSpan = '4'>
+        <td colSpan = '5'>
             <table className='table table-light table-striped'>
 				<thead>
 					<tr>
@@ -93,9 +129,8 @@ export class Base extends Component {
     }
 
     popupSystemTable(root) {
-        // alert(Array.isArray(this.state.medSystems) ? "medSystems is an Array" : "medSystems is not an Array");
         ReactDOM.render(  
-        <td colSpan = '4'>
+        <td colSpan = '5'>
             <table className='table table-light table-striped'>
 				<thead>
                     <tr role="row">
@@ -113,9 +148,8 @@ export class Base extends Component {
     }
 
     popupComponentDT(root) {
-        // alert(Array.isArray(this.state.medComponents) ? "medComponents is an Array" : "medComponents is not an Array");
         ReactDOM.render( 
-        <td colSpan = '4'> 
+        <td colSpan = '5'> 
             <AsyncFetchPop data = { this.state.dtComponents } />
         </td>, root);
     }
@@ -143,10 +177,11 @@ export class Base extends Component {
       
       this.tableName = /^api\/(.+$)/.exec(itemApi);
       this.title = this.tableName[1];
-
+      
       fetch(this.itemUrl + itemApi)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             this.setState({ descriptions: data, loading: false });
       });
     }
@@ -176,9 +211,6 @@ export class Base extends Component {
         fetch(urlComplete)
         .then(response => response.json()) 
         .then(data => {
-            console.log(urlComplete);
-            // console.log(data);
-            // this.setState({ title: this.title, id: this.id });
  
             if( this.title === 'Description' || 
                 this.title === 'Owner' ||
@@ -402,8 +434,8 @@ export class Base extends Component {
             
             elList.replace('glyphicon-plus', 'glyphicon-minus');
             
-            if( !isNullOrUndefined(this.tr)) this.tr.parentNode.removeChild(this.tr);
-            if( !isNullOrUndefined(this.elListSave)) this.elListSave.replace('glyphicon-minus', 'glyphicon-plus');
+            if( this.tr !== null && this.tr !== undefined) this.tr.parentNode.removeChild(this.tr);
+            if( this.elListSave !== null && this.elListSave !== undefined ) this.elListSave.replace('glyphicon-minus', 'glyphicon-plus');
 
             // create nested table using regular HTML elements
             // this.createNTableHTML(id, elGP, elP, this.headings);     
@@ -421,14 +453,86 @@ export class Base extends Component {
             this.tr = null;
         }
     }
+
+    setConfirmOpen(event) 
+    {
+        
+        return (
+            <ConfirmDialog
+                title="Delete Record?"
+                open={this.confirmOpen}
+                setOpen = {this.confirmOpen}
+                onConfirm={this.deletePost}
+            >
+                Are you sure you want to delete this record?
+            </ConfirmDialog>
+        ) 
+        /* 
+        const emails = ['username@gmail.com', 'user02@gmail.com']; 
+        // const [open, setOpen] = React.useState(false);
+        const open = false;
+        const setOpen = false;
+        // const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+        const selectedValue = emails[1];
+        const setSelectedValue = emails[1];
+
+        const handleClickOpen = () => {
+          setOpen(true);
+        };
+      
+        const handleClose = (value) => {
+          setOpen(false);
+          setSelectedValue(value);
+        };
+        
+        alert("in setConfirmOpen");
+        
+        return (
+          <div>
+            <Typography variant="subtitle1">Selected: {selectedValue}</Typography>
+            <br />
+            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+              Open simple dialog
+            </Button>
+            <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+          </div>
+        );    
+        */
+    };
+   
+    onSelect(item) {
+        if (this.svSelected === item) {
+        this.selectedItem = null;
+        this.editText = "Edit";
+        }
+        else {
+        this.selectedItem = item;
+        this.svSelected = item;
+        this.editText = "Cancel Edit";
+        }
+    }
+
+    onDelete(item, index) {
+        // https://stackoverflow.com/questions/43962481/angular-2-get-element-data-and-remove-it
+        if(window.confirm('Please confirm deletion of row')) {
+        // this.delete(this.selectedItem, this.itemUrl);    // physically delete record: not working yet
+        this.items.splice(index, 1);          // remove row from array items
+        } else {
+        return false;
+        }
+    }
+
+    delete(item, itemUrl) {
+        // alert('id:' + item.id + ' name: ' + item.desc);
+        this.appService.deleteItem(item, itemUrl).subscribe();
+    }
        
     render() {
         const contents = this.state.loading
             ? <p><em>Loading...</em></p>
             : this.renderCommonTable(this.state.descriptions.sort(this.compareFn));
-        
+        console.log( {contents} );
         return <div>
-
             { contents }
         </div>;
     }  

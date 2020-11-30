@@ -14,7 +14,7 @@ const App = () => (
       if (isLoading) return "Loading..."
       if (error) return `Something went wrong: ${error.message}`
       
-      console.log("In AsyncFetch")
+      // console.log("In AsyncFetch")
       
       if (data) 
         console.log(data)
@@ -96,22 +96,5 @@ export default App;
             label: "Maintenance Due Date"
           }
         ]
-        const title = "Component";
-        const options = {
-          filterType: "dropdown",
-          responsive: "scroll"
-        }
-        return (
-          <MUIDataTable title = 
-          {<Typography variant="h4">
-              {title}
-              {isLoading && <CircularProgress size={24} style={{marginLeft: 15, position: 'relative', top: 4}} />}
-          </Typography>
-          } 
-          columns={columns}
-          data={data}
-          options={options}
-        />
-        )
       
  */
